@@ -150,6 +150,9 @@ class TritonGDNKernel(LinearAttnKernelBase):
         query_start_loc: torch.Tensor,
         **kwargs,
     ) -> torch.Tensor:
+        # This is also the recurrent implementation used by target_verify;
+        # decode keeps state updates enabled while verify passes its own
+        # intermediate-state buffers and disables the live-state write-back.
         return fused_sigmoid_gating_delta_rule_update(
             A_log=A_log,
             dt_bias=dt_bias,

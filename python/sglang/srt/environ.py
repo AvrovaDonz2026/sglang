@@ -480,6 +480,9 @@ class Envs:
     SGLANG_VALIDATE_MAMBA_REPLAY_STATE_INDICES = EnvBool(False)
     SGLANG_GDN_DECODE_FUSION_LOG_LAYER_HITS = EnvBool(False)
     SGLANG_GDN_DECODE_FUSION_VERIFY_REAL_TENSORS = EnvBool(False)
+    # Diagnostic only: bypass packed GDN decode so ordinary decode uses the
+    # split-QKV recurrent kernel shared with target verify.
+    SGLANG_GDN_FORCE_SHARED_DECODE = EnvBool(False)
     # NaN-fill the unified memory pool at boot (debug repro switch).
     SGLANG_DEBUG_POISON_POOL = EnvBool(False)
     SGLANG_DEBUG_REVERT_PR = EnvInt(0)

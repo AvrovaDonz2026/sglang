@@ -864,7 +864,14 @@ class GDNAttnBackend(MambaAttnBackendBase):
 
         # Skip split + reshape + separate gating kernel by consuming
         # the packed mixed_qkv directly in a single fused Triton kernel.
-        if self.kernel_dispatcher.supports_packed_decode:
+        # Diagnostic gate: packed decode fuses QKV unpack with the recurrent
+        # update.  Disable it to compare ordinary decode against target verify,
+        # whose one-step path is TritonGDNKernel.decode (same recurrent kernel,
+        # with state write-back enabled).  The default remains unchanged.
+        if (
+            self.kernel_dispatcher.supports_packed_decode
+            and not envs.SGLANG_GDN_FORCE_SHARED_DECODE.get()
+        ):
             core_attn_out = self.kernel_dispatcher.packed_decode(
                 mixed_qkv=mixed_qkv,
                 a=a,
